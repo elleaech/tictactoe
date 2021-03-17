@@ -13,6 +13,7 @@ public class Main {
     private char pattern[][] = new char[3][3];
     private int Orows = 0, Xrows = 0;
     private int Olines = 0, Xlines = 0;
+    private int Ocross = 0, Xcross = 0;
 
     private Scanner scanner = new Scanner(System.in);
 
@@ -122,15 +123,16 @@ public class Main {
     public int check_win(){
         get_rows();
         get_lines();
+        get_cross();
 
         if (this.Orows == 0 && this.Olines == 0 && this.Xrows == 0 && this.Xlines == 0){
-            if (get_cross() == 0 && (is_finished())){
+            if (this.Xcross == 0 && this.Ocross == 0 && (is_finished())){
                 return -1;
             }
-            else if (get_cross() == 1){
+            else if (this.Xcross != 0 && this.Ocross == 0){
                 return 1;
             }
-            else if (get_cross() == 2){
+            else if (this.Xcross == 0 && this.Ocross != 0){
                 return 2;
             }
         }
@@ -191,14 +193,16 @@ public class Main {
         }
     }
 
-    private int get_cross(){
+    private void get_cross(){
+        this.Xcross = 0;
+        this.Ocross = 0;
+
         if (this.pattern[1][1] == 'X' && ((this.pattern[0][0] == 'X' && this.pattern[2][2] == 'X') || this.pattern[0][2] == 'X' && this.pattern[2][0] == 'X')){
-            return 1;
+            this.Xcross++;
         }
         else if (this.pattern[1][1] == 'O' && ((this.pattern[0][0] == 'O' && this.pattern[2][2] == 'O') || this.pattern[0][2] == 'O' && this.pattern[2][0] == 'O')){
-            return 2;
+            this.Ocross++;
         }
-        return 0;
     }
 
     private boolean is_finished(){
