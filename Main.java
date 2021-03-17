@@ -24,8 +24,8 @@ public class Main {
 
 
         // CREATE MATRIX & PRINT MATRIX
-        tictactoe.create_matrix();
-        tictactoe.print_matrix();
+        tictactoe.createMatrix();
+        tictactoe.printMatrix();
 
         int player = 1;
         int game_result = 0;
@@ -46,10 +46,10 @@ public class Main {
             }
 
             // PRINT MATRIX
-            tictactoe.print_matrix();
+            tictactoe.printMatrix();
 
             // ANALYZE GAME STATE
-            game_result = tictactoe.check_win();
+            game_result = tictactoe.checkWin();
             switch (game_result){
                 case -1:
                     System.out.println("Draw");
@@ -100,7 +100,7 @@ public class Main {
         }
     }
 
-    public char[][] create_matrix(){
+    public char[][] createMatrix(){
         char matrix[][] = new char[3][3];
 
         for (int x = 0; x < 3; x++){
@@ -113,7 +113,7 @@ public class Main {
         return matrix;
     }
 
-    public void print_matrix(){
+    public void printMatrix(){
         System.out.println("-----------");
         System.out.printf("| %s %s %s |\n", this.pattern[0][0],this.pattern[0][1], this.pattern[0][2]);
         System.out.printf("| %s %s %s |\n", this.pattern[1][0],this.pattern[1][1], this.pattern[1][2]);
@@ -121,13 +121,13 @@ public class Main {
         System.out.println("-----------");
     }
 
-    public int check_win(){
-        get_rows();
-        get_lines();
-        get_cross();
+    public int checkWin(){
+        getRows();
+        getLines();
+        getCross();
 
         if (this.Orows == 0 && this.Olines == 0 && this.Xrows == 0 && this.Xlines == 0){
-            if (this.Xcross == 0 && this.Ocross == 0 && (is_finished())){
+            if (this.Xcross == 0 && this.Ocross == 0 && (isFinished())){
                 return -1;
             }
             else if (this.Xcross != 0 && this.Ocross == 0){
@@ -150,7 +150,7 @@ public class Main {
 
 
 
-    private void get_rows(){
+    private void getRows(){
         int Orows = 0, Xrows = 0;
         this.Orows = 0;
         this.Xrows = 0;
@@ -172,7 +172,7 @@ public class Main {
         }
     }
 
-    private void get_lines(){
+    private void getLines(){
         int Orows = 0, Xrows = 0;
         this.Olines = 0;
         this.Xlines = 0;
@@ -194,7 +194,7 @@ public class Main {
         }
     }
 
-    private void get_cross(){
+    private void getCross(){
         this.Xcross = 0;
         this.Ocross = 0;
 
@@ -206,7 +206,7 @@ public class Main {
         }
     }
 
-    private boolean is_finished(){
+    private boolean isFinished(){
         for (int x = 0; x < 3; x++){
             for (int y = 0; y < 3; y++){
                 if(this.pattern[x][y] == ' '){
