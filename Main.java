@@ -10,12 +10,13 @@ import java.util.Scanner;
 
 
 public class Main {
-    private char pattern[][] = new char[3][3];
-    private int Orows = 0, Xrows = 0;
-    private int Olines = 0, Xlines = 0;
-    private int Ocross = 0, Xcross = 0;
+    private static char pattern[][] = new char[3][3];
 
-    private Scanner scanner = new Scanner(System.in);
+    private static int Orows = 0, Xrows = 0;
+    private static int Olines = 0, Xlines = 0;
+    private static int Ocross = 0, Xcross = 0;
+
+    private static final Scanner scanner = new Scanner(System.in);
 
 
     public static void main(String[] args) {
