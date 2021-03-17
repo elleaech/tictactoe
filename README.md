@@ -3,5 +3,5 @@
 
 ## Installation
 ``` bash
-docker run --name tictac -it sourcerer2/tictactoe
+docker run --rm --name tictac -it sourcerer2/tictactoe
 ```
