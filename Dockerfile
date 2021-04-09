@@ -1,7 +1,7 @@
 FROM openjdk:latest
 
 WORKDIR /root
-COPY . /root
+COPY src/. /root
 
-RUN javac src/Main.java
-CMD java src/Main
+RUN javac Main.java
+CMD java Main
