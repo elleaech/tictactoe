@@ -99,7 +99,7 @@ public class TicTacToe {
     // USER 2 -> Medium
     // USER 3 -> Hard
 
-    public boolean play(int player, int user) {
+    private boolean play(int player, int user) {
         int coordinate_X = 0, coordinate_Y = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -175,7 +175,7 @@ public class TicTacToe {
     // MATRIX INDEX 0 -> O (player2)
     // MATRIX INDEX 1 -> X (player1)
 
-    public int checkWin() {
+    private int checkWin() {
         int[] rRows = getRows();
         int[] rLines = getLines();
         int[] rCross = getCross();
