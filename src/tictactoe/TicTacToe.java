@@ -84,14 +84,38 @@ public class TicTacToe {
 
     }
 
-    private boolean isGameOption(String input) {
-        for (String obj : this.gameOptions) {
-            if (obj.equals(input)) {
-                return true;
+    public char[][] createMatrix() {
+        char matrix[][] = new char[3][3];
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                matrix[x][y] = ' ';
             }
         }
 
-        return false;
+        this.pattern = matrix;
+        return matrix;
+    }
+
+    public char[][] createMatrix(char[] pattern) {
+        char matrix[][] = new char[3][3];
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                matrix[x][y] = pattern[(x * 3) + y];
+            }
+        }
+
+        this.pattern = matrix;
+        return matrix;
+    }
+
+    public void printMatrix() {
+        System.out.println("-----------");
+        System.out.printf("| %s %s %s |\n", this.pattern[0][0], this.pattern[0][1], this.pattern[0][2]);
+        System.out.printf("| %s %s %s |\n", this.pattern[1][0], this.pattern[1][1], this.pattern[1][2]);
+        System.out.printf("| %s %s %s |\n", this.pattern[2][0], this.pattern[2][1], this.pattern[2][2]);
+        System.out.println("-----------");
     }
 
     // USER 0 -> Human
@@ -133,38 +157,14 @@ public class TicTacToe {
         return true;
     }
 
-    public char[][] createMatrix() {
-        char matrix[][] = new char[3][3];
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                matrix[x][y] = ' ';
+    private boolean isGameOption(String input) {
+        for (String obj : this.gameOptions) {
+            if (obj.equals(input)) {
+                return true;
             }
         }
 
-        this.pattern = matrix;
-        return matrix;
-    }
-
-    public char[][] createMatrix(char[] pattern) {
-        char matrix[][] = new char[3][3];
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                matrix[x][y] = pattern[(x * 3) + y];
-            }
-        }
-
-        this.pattern = matrix;
-        return matrix;
-    }
-
-    public void printMatrix() {
-        System.out.println("-----------");
-        System.out.printf("| %s %s %s |\n", this.pattern[0][0], this.pattern[0][1], this.pattern[0][2]);
-        System.out.printf("| %s %s %s |\n", this.pattern[1][0], this.pattern[1][1], this.pattern[1][2]);
-        System.out.printf("| %s %s %s |\n", this.pattern[2][0], this.pattern[2][1], this.pattern[2][2]);
-        System.out.println("-----------");
+        return false;
     }
 
     // RETURN INT 1 -> X
