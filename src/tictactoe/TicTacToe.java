@@ -84,55 +84,6 @@ public class TicTacToe {
 
     }
 
-    private boolean isGameOption(String input) {
-        for (String obj : this.gameOptions) {
-            if (obj.equals(input)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // USER 0 -> Human
-    // USER 1 -> Easy
-    // USER 2 -> Medium
-    // USER 3 -> Hard
-
-    public boolean play(int player, int user) {
-        int coordinate_X = 0, coordinate_Y = 0;
-
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
-
-        if (user == 0) {
-            try {
-                coordinate_X = scanner.nextInt();
-                coordinate_Y = scanner.nextInt();
-            } catch (java.util.InputMismatchException err) {
-                scanner.nextLine();
-                return false;
-            }
-        } else if (user == 1) {
-            coordinate_X = random.nextInt(3 - 1 + 1) + 1;
-            coordinate_Y = random.nextInt(3 - 1 + 1) + 1;
-        }
-
-        if ((coordinate_X > 3 || coordinate_X < 1) || (coordinate_Y > 3 || coordinate_Y < 1)) {
-            return false;
-        } else if (this.pattern[coordinate_X - 1][coordinate_Y - 1] != ' ') {
-            return false;
-        } else {
-            if (player == 1) {
-                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'X';
-            } else if (player == 2) {
-                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'O';
-            }
-        }
-
-        return true;
-    }
-
     public char[][] createMatrix() {
         char matrix[][] = new char[3][3];
 
@@ -167,6 +118,55 @@ public class TicTacToe {
         System.out.println("-----------");
     }
 
+    // USER 0 -> Human
+    // USER 1 -> Easy
+    // USER 2 -> Medium
+    // USER 3 -> Hard
+
+    private boolean play(int player, int user) {
+        int coordinate_X = 0, coordinate_Y = 0;
+
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        if (user == 0) {
+            try {
+                coordinate_X = scanner.nextInt();
+                coordinate_Y = scanner.nextInt();
+            } catch (java.util.InputMismatchException err) {
+                scanner.nextLine();
+                return false;
+            }
+        } else if (user == 1) {
+            coordinate_X = random.nextInt(3 - 1 + 1) + 1;
+            coordinate_Y = random.nextInt(3 - 1 + 1) + 1;
+        }
+
+        if ((coordinate_X > 3 || coordinate_X < 1) || (coordinate_Y > 3 || coordinate_Y < 1)) {
+            return false;
+        } else if (this.pattern[coordinate_X - 1][coordinate_Y - 1] != ' ') {
+            return false;
+        } else {
+            if (player == 1) {
+                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'X';
+            } else if (player == 2) {
+                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'O';
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isGameOption(String input) {
+        for (String obj : this.gameOptions) {
+            if (obj.equals(input)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // RETURN INT 1 -> X
     // RETURN INT 2 -> O
     // RETURN INT 0 -> NOT FINISHED
@@ -175,7 +175,7 @@ public class TicTacToe {
     // MATRIX INDEX 0 -> O (player2)
     // MATRIX INDEX 1 -> X (player1)
 
-    public int checkWin() {
+    private int checkWin() {
         int[] rRows = getRows();
         int[] rLines = getLines();
         int[] rCross = getCross();

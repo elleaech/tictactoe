@@ -1,5 +1,5 @@
 # Tic Tac Toe
-'Tic Tac Toe' game for Hyperskill JetBrains Academy
+Tic Tac Toe for Hyperskill JetBrains Academy
 
 ## Installation & Usage
 ``` bash
