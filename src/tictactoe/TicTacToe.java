@@ -3,10 +3,18 @@ package tictactoe;
 import java.util.*;
 
 public class TicTacToe {
-    private char pattern[][] = new char[3][3];
+    private char board[][] = new char[3][3];
+    private String[] gameOptions = new String[4];
+    private final Scanner scanner = new Scanner(System.in);
 
-    private final String[] gameOptions = new String[4];
+    private final char playerX1 = 'X';
+    private final char playerO2 = 'O';
+    private String[] typePlayers = new String[2];
 
+    private int[] currentPlayCoordinate = new int[2];
+    private int turn = 0;
+
+    /*-----------------------------------------------------------------------------*/
     public TicTacToe() {
         this.gameOptions[0] = "easy";
         this.gameOptions[1] = "medium";
@@ -15,76 +23,123 @@ public class TicTacToe {
     }
 
     public void start() {
-        String[] playerOption = new String[2];
-        Scanner scanner = new Scanner(System.in);
+        createMatrix();
+        printMatrix();
+
+        if (menu()) {
+            while (true) {
+                callTurn();
+                drawPlay();
+                printMatrix();
+
+                if (winner()) {
+                    return;
+                }
+            }
+        }
+
+        return;
+    }
+
+    /*-----------------------------------------------------------------------------*/
+    private boolean menu() {
+        String[] startInput;
 
         while (true) {
             System.out.print("Input command: ");
-            String[] command = scanner.nextLine().split(" ");
+            startInput = scanner.nextLine().split(" ");
 
-            if (command[0].equals("start") && command.length == 3) {
-                playerOption[0] = command[1];
-                playerOption[1] = command[2];
-
-                if (this.isGameOption(playerOption[0]) && this.isGameOption(playerOption[0])) {
-                    int player = 1;
-                    int game_result = 0;
-
-                    this.printMatrix();
-
-                    while (game_result == 0) {
-                        int user = 0;
-                        int index = (player - 1);
-                        boolean permission = false;
-
-                        if (playerOption[index].equals("user")) {
-                            System.out.print("Enter the coordinates: ");
-                            user = 0;
-                        } else {
-                            System.out.printf("Making move level \"%s\"\n", playerOption[index]);
-
-                            switch (playerOption[index]) {
-                            case "easy":
-                                user = 1;
-                                break;
-                            }
-                        }
-
-                        do {
-                            permission = this.play(player, user);
-                        } while (!permission);
-
-                        if (player == 2) {
-                            player = 1;
-                        } else {
-                            player++;
-                        }
-
-                        // ANALYZE GAME STATE
-                        this.printMatrix();
-                        game_result = this.checkWin();
-                    }
-
-                    break;
-                }
-
-                else {
-                    // END IF
+            if (startInput[0].equals("start") && startInput.length == 3) {
+                if (isGameOption(startInput[1]) && isGameOption(startInput[2])) {
+                    typePlayers[0] = startInput[1];
+                    typePlayers[1] = startInput[2];
+                    return true;
                 }
             }
 
-            else if (command[0].equals("exit")) {
-                break;
+            else if (startInput[0].equals("exit")) {
+                return false;
             }
 
             else {
                 System.out.println("Bad parameters!");
             }
         }
-
     }
 
-    public char[][] createMatrix() {
+    private void callTurn() {
+        if (typePlayers[turn].equals("user")) {
+            getUsersPlay();
+        }
+
+        else if (typePlayers[turn].equals("easy")) {
+            System.out.printf("Making move level " + "easy\n");
+            analyseEasyPlay();
+        }
+
+        else if (typePlayers[turn].equals("medium")) {
+            System.out.printf("Making move level " + "medium\n");
+            analyseMediumPlay();
+        }
+
+        else if (typePlayers[turn].equals("hard")) {
+            System.out.printf("Making move level " + "hard\n");
+            analyseHardPlay();
+        }
+    }
+
+    private void drawPlay() {
+        if (turn == 0) {
+            board[currentPlayCoordinate[0]][currentPlayCoordinate[1]] = playerX1;
+            return;
+        }
+
+        board[currentPlayCoordinate[0]][currentPlayCoordinate[1]] = playerO2;
+    }
+
+    private boolean winner() {
+        if (turn == 1) {
+            turn = 0;
+        } else if (turn == 0) {
+            turn = 1;
+        }
+
+        for (int coordX = 0; coordX < 3; coordX++) {
+            if (board[coordX][0] == playerX1 && board[coordX][1] == playerX1 && board[coordX][2] == playerX1) {
+                System.out.println("X wins");
+                return true;
+            } else if (board[coordX][0] == playerO2 && board[coordX][1] == playerO2 && board[coordX][2] == playerO2) {
+                System.out.println("O wins");
+                return true;
+            }
+
+            else if (board[0][coordX] == playerX1 && board[1][coordX] == playerX1 && board[2][coordX] == playerX1) {
+                System.out.println("X wins");
+                return true;
+            } else if (board[0][coordX] == playerO2 && board[1][coordX] == playerO2 && board[2][coordX] == playerO2) {
+                System.out.println("O wins");
+                return true;
+            }
+        }
+
+        if (board[0][0] == playerX1 && board[1][1] == playerX1 && board[2][2] == playerX1) {
+            System.out.println("X wins");
+            return true;
+        } else if (board[0][2] == playerX1 && board[1][1] == playerX1 && board[2][0] == playerX1) {
+            System.out.println("X wins");
+            return true;
+        } else if (board[0][0] == playerO2 && board[1][1] == playerO2 && board[2][2] == playerO2) {
+            System.out.println("O wins");
+            return true;
+        } else if (board[0][2] == playerO2 && board[1][1] == playerO2 && board[2][0] == playerO2) {
+            System.out.println("O wins");
+            return true;
+        }
+
+        return false;
+    }
+
+    private void createMatrix() {
         char matrix[][] = new char[3][3];
 
         for (int x = 0; x < 3; x++) {
@@ -93,68 +148,436 @@ public class TicTacToe {
             }
         }
 
-        this.pattern = matrix;
-        return matrix;
+        this.board = matrix;
     }
 
-    public char[][] createMatrix(char[] pattern) {
-        char matrix[][] = new char[3][3];
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                matrix[x][y] = pattern[(x * 3) + y];
-            }
-        }
-
-        this.pattern = matrix;
-        return matrix;
-    }
-
-    public void printMatrix() {
+    private void printMatrix() {
         System.out.println("-----------");
-        System.out.printf("| %s %s %s |\n", this.pattern[0][0], this.pattern[0][1], this.pattern[0][2]);
-        System.out.printf("| %s %s %s |\n", this.pattern[1][0], this.pattern[1][1], this.pattern[1][2]);
-        System.out.printf("| %s %s %s |\n", this.pattern[2][0], this.pattern[2][1], this.pattern[2][2]);
+        System.out.printf("| %s %s %s |\n", this.board[0][0], this.board[0][1], this.board[0][2]);
+        System.out.printf("| %s %s %s |\n", this.board[1][0], this.board[1][1], this.board[1][2]);
+        System.out.printf("| %s %s %s |\n", this.board[2][0], this.board[2][1], this.board[2][2]);
         System.out.println("-----------");
     }
 
-    // USER 0 -> Human
-    // USER 1 -> Easy
-    // USER 2 -> Medium
-    // USER 3 -> Hard
+    /*-----------------------------------------------------------------------------*/
+    private void getUsersPlay() {
+        int tempCoordX;
+        int tempCoordY;
 
-    private boolean play(int player, int user) {
-        int coordinate_X = 0, coordinate_Y = 0;
-
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
-
-        if (user == 0) {
+        while (true) {
+            System.out.print("Enter the coordinates: ");
             try {
-                coordinate_X = scanner.nextInt();
-                coordinate_Y = scanner.nextInt();
-            } catch (java.util.InputMismatchException err) {
-                scanner.nextLine();
-                return false;
+                tempCoordX = scanner.nextInt();
+                tempCoordY = scanner.nextInt();
+            } catch (InputMismatchException er) {
+                System.out.println("You should enter numbers!");
+                continue;
             }
-        } else if (user == 1) {
-            coordinate_X = random.nextInt(3 - 1 + 1) + 1;
-            coordinate_Y = random.nextInt(3 - 1 + 1) + 1;
+
+            if (coordinateIsNotAvailable((tempCoordX - 1), (tempCoordY - 1), true)) {
+                continue;
+            }
+
+            break;
         }
 
-        if ((coordinate_X > 3 || coordinate_X < 1) || (coordinate_Y > 3 || coordinate_Y < 1)) {
-            return false;
-        } else if (this.pattern[coordinate_X - 1][coordinate_Y - 1] != ' ') {
-            return false;
+        currentPlayCoordinate[0] = (tempCoordX - 1);
+        currentPlayCoordinate[1] = (tempCoordY - 1);
+    }
+
+    private void analyseEasyPlay() {
+        int tempCoordX;
+        int tempCoordY;
+
+        Random randomPlay = new Random();
+
+        while (true) {
+            tempCoordX = randomPlay.nextInt(3 - 1 + 1) + 1;
+            tempCoordY = randomPlay.nextInt(3 - 1 + 1) + 1;
+
+            if (coordinateIsNotAvailable(tempCoordX, tempCoordY, false)) {
+                continue;
+            }
+
+            break;
+        }
+
+        currentPlayCoordinate[0] = tempCoordX;
+        currentPlayCoordinate[1] = tempCoordY;
+    }
+
+    private void analyseMediumPlay() {
+        int[] winningPlay = new int[2];
+        winningPlay[0] = -1;
+        winningPlay[1] = -1;
+
+        int[] blockWinPlay = new int[2];
+        blockWinPlay[0] = -1;
+        blockWinPlay[1] = -1;
+
+        char player;
+        if (turn == 0) {
+            player = playerX1;
         } else {
-            if (player == 1) {
-                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'X';
-            } else if (player == 2) {
-                this.pattern[coordinate_X - 1][coordinate_Y - 1] = 'O';
+            player = playerO2;
+        }
+
+        checkLines(winningPlay, blockWinPlay, player);
+        checkColumns(winningPlay, blockWinPlay, player);
+        checkCrosses(winningPlay, blockWinPlay, player);
+
+        if (winningPlay[0] != -1 && winningPlay[1] != -1) {
+            currentPlayCoordinate[0] = winningPlay[0];
+            currentPlayCoordinate[1] = winningPlay[1];
+            return;
+        }
+        if (blockWinPlay[0] != -1 && blockWinPlay[1] != -1) {
+            currentPlayCoordinate[0] = blockWinPlay[0];
+            currentPlayCoordinate[1] = blockWinPlay[1];
+            return;
+        }
+
+        analyseEasyPlay();
+    }
+
+    /*-----------------------------------------------------------------------------*/
+    private void analyseHardPlay() {
+        int[] tempCoordinates = new int[2];
+
+        while (true) {
+            tempCoordinates = findBestMove();
+            if (coordinateIsNotAvailable(tempCoordinates[0], tempCoordinates[1], false)) {
+                continue;
+            }
+            break;
+        }
+
+        currentPlayCoordinate = tempCoordinates;
+    }
+
+    private Boolean isMovesLeft() {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board[i][j] == '_')
+                    return true;
+        return false;
+    }
+
+    private int evaluate() {
+        // Checking for Rows for X or O victory.
+        for (int row = 0; row < 3; row++) {
+            if (board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
+                if (board[row][0] == playerX1)
+                    return +10;
+                else if (board[row][0] == playerO2)
+                    return -10;
             }
         }
 
-        return true;
+        // Checking for Columns for X or O victory.
+        for (int col = 0; col < 3; col++) {
+            if (board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
+                if (board[0][col] == playerX1)
+                    return +10;
+
+                else if (board[0][col] == playerO2)
+                    return -10;
+            }
+        }
+
+        // Checking for Diagonals for X or O victory.
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            if (board[0][0] == playerX1)
+                return +10;
+            else if (board[0][0] == playerO2)
+                return -10;
+        }
+
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            if (board[0][2] == playerX1)
+                return +10;
+            else if (board[0][2] == playerO2)
+                return -10;
+        }
+
+        // Else if none of them have won then return 0
+        return 0;
+    }
+
+    private int minimax(int depth, Boolean isMax) {
+        int score = evaluate();
+
+        // If Maximizer has won the game
+        // return his/her evaluated score
+        if (score == 10)
+            return score;
+
+        // If Minimizer has won the game
+        // return his/her evaluated score
+        if (score == -10)
+            return score;
+
+        // If there are no more moves and
+        // no winner then it is a tie
+        if (isMovesLeft() == false)
+            return 0;
+
+        // If this maximizer's move
+        if (isMax) {
+            int best = -1000;
+
+            // Traverse all cells
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    // Check if cell is empty
+                    if (board[i][j] == '_') {
+                        // Make the move
+                        board[i][j] = playerX1;
+
+                        // Call minimax recursively and choose
+                        // the maximum value
+                        best = Math.max(best, minimax(depth + 1, !isMax));
+
+                        // Undo the move
+                        board[i][j] = '_';
+                    }
+                }
+            }
+            return best;
+        }
+
+        // If this minimizer's move
+        else {
+            int best = 1000;
+
+            // Traverse all cells
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    // Check if cell is empty
+                    if (board[i][j] == '_') {
+                        // Make the move
+                        board[i][j] = playerO2;
+
+                        // Call minimax recursively and choose
+                        // the minimum value
+                        best = Math.min(best, minimax(depth + 1, !isMax));
+
+                        // Undo the move
+                        board[i][j] = '_';
+                    }
+                }
+            }
+            return best;
+        }
+    }
+
+    private int[] findBestMove() {
+        int bestVal = -1000;
+        int[] bestMove = new int[2];
+
+        // Traverse all cells, evaluate minimax function
+        // for all empty cells. And return the cell
+        // with optimal value.
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                // Check if cell is empty
+                if (board[i][j] == '_') {
+                    // Make the move
+                    board[i][j] = playerX1;
+
+                    int moveVal = minimax(0, false);
+
+                    // Undo the move
+                    board[i][j] = '_';
+
+                    // If the value of the current move is
+                    // more than the best value, then update
+                    // best/
+                    if (moveVal > bestVal) {
+                        bestMove[0] = i;
+                        bestMove[1] = j;
+                        bestVal = moveVal;
+                    }
+                }
+            }
+        }
+
+        return bestMove;
+    }
+
+    /*-----------------------------------------------------------------------------*/
+    private void checkLines(int[] winningPlay, int[] blockWinPlay, char player) {
+        for (int coordX = 0; coordX < 3; coordX++) {
+            for (int coordY = 0; coordY < 2; coordY++) {
+                if (coordY == 0) {
+                    if ((board[coordX][coordY] == board[coordX][coordY + 1]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY + 2, false))) {
+                        winningPlay[0] = coordX;
+                        winningPlay[1] = coordY + 2;
+                    }
+                    if ((board[coordX][coordY] == board[coordX][coordY + 2]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY + 1, false))) {
+                        winningPlay[0] = coordX;
+                        winningPlay[1] = coordY + 1;
+                    }
+
+                    if ((board[coordX][coordY] == board[coordX][coordY + 1]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY + 2, false))) {
+                        blockWinPlay[0] = coordX;
+                        blockWinPlay[1] = coordY + 2;
+                    }
+                    if ((board[coordX][coordY] == board[coordX][coordY + 2]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY + 1, false))) {
+                        blockWinPlay[0] = coordX;
+                        blockWinPlay[1] = coordY + 1;
+                    }
+                }
+
+                else {
+                    if ((board[coordX][coordY] == board[coordX][coordY + 1]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY - 1, false))) {
+                        winningPlay[0] = coordX;
+                        winningPlay[1] = coordY - 1;
+                    }
+
+                    if ((board[coordX][coordY] == board[coordX][coordY + 1]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX, coordY - 1, false))) {
+                        blockWinPlay[0] = coordX;
+                        blockWinPlay[1] = coordY - 1;
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkColumns(int[] winningPlay, int[] blockWinPlay, char player) {
+        for (int coordX = 0; coordX < 2; coordX++) {
+            for (int coordY = 0; coordY < 3; coordY++) {
+                if (coordX == 0) {
+                    if ((board[coordX][coordY] == board[coordX + 1][coordY]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX + 2, coordY, false))) {
+                        winningPlay[0] = coordX + 2;
+                        winningPlay[1] = coordY;
+                    }
+                    if ((board[coordX][coordY] == board[coordX + 2][coordY]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX + 1, coordY, false))) {
+                        winningPlay[0] = coordX + 1;
+                        winningPlay[1] = coordY;
+                    }
+
+                    if ((board[coordX][coordY] == board[coordX + 1][coordY]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX + 2, coordY, false))) {
+                        blockWinPlay[0] = coordX + 2;
+                        blockWinPlay[1] = coordY;
+                    }
+                    if ((board[coordX][coordY] == board[coordX + 2][coordY]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX + 1, coordY, false))) {
+                        blockWinPlay[0] = coordX + 1;
+                        blockWinPlay[1] = coordY;
+                    }
+                }
+
+                else {
+                    if ((board[coordX][coordY] == board[coordX + 1][coordY]) && board[coordX][coordY] == player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX - 1, coordY, false))) {
+                        winningPlay[0] = coordX - 1;
+                        winningPlay[1] = coordY;
+                    }
+
+                    if ((board[coordX][coordY] == board[coordX + 1][coordY]) && board[coordX][coordY] != player
+                            && board[coordX][coordY] != ' ' && !(coordinateIsNotAvailable(coordX - 1, coordY, false))) {
+                        blockWinPlay[0] = coordX - 1;
+                        blockWinPlay[1] = coordY;
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkCrosses(int[] winningPlay, int[] blockWinPlay, char player) {
+        if ((board[0][0] == board[1][1]) && board[0][0] == player && board[0][0] != ' '
+                && !(coordinateIsNotAvailable(2, 2, false))) {
+            winningPlay[0] = 2;
+            winningPlay[1] = 2;
+        }
+        if ((board[0][0] == board[1][1]) && board[0][0] != player && board[0][0] != ' '
+                && !(coordinateIsNotAvailable(2, 2, false))) {
+            blockWinPlay[0] = 2;
+            blockWinPlay[1] = 2;
+        }
+
+        if ((board[0][0] == board[2][2]) && board[0][0] == player && board[0][0] != ' '
+                && !(coordinateIsNotAvailable(1, 1, false))) {
+            winningPlay[0] = 1;
+            winningPlay[1] = 1;
+        }
+        if ((board[0][0] == board[2][2]) && board[0][0] != player && board[0][0] != ' '
+                && !(coordinateIsNotAvailable(1, 1, false))) {
+            blockWinPlay[0] = 1;
+            blockWinPlay[1] = 1;
+        }
+
+        if ((board[1][1] == board[2][2]) && board[1][1] == player && board[1][1] != ' '
+                && !(coordinateIsNotAvailable(0, 0, false))) {
+            winningPlay[0] = 0;
+            winningPlay[1] = 0;
+        }
+        if ((board[1][1] == board[2][2]) && board[1][1] != player && board[1][1] != ' '
+                && !(coordinateIsNotAvailable(0, 0, false))) {
+            blockWinPlay[0] = 0;
+            blockWinPlay[1] = 0;
+        }
+
+        if ((board[0][2] == board[1][1]) && board[0][2] == player && board[0][2] != ' '
+                && !(coordinateIsNotAvailable(2, 0, false))) {
+            winningPlay[0] = 2;
+            winningPlay[1] = 0;
+        }
+        if ((board[0][2] == board[1][1]) && board[0][2] != player && board[0][2] != ' '
+                && !(coordinateIsNotAvailable(2, 0, false))) {
+            blockWinPlay[0] = 2;
+            blockWinPlay[1] = 0;
+        }
+
+        if ((board[0][2] == board[2][0]) && board[0][2] == player && board[0][2] != ' '
+                && !(coordinateIsNotAvailable(1, 1, false))) {
+            winningPlay[0] = 1;
+            winningPlay[1] = 1;
+        }
+        if ((board[1][1] == board[2][0]) && board[1][1] != player && board[1][1] != ' '
+                && !(coordinateIsNotAvailable(1, 1, false))) {
+            blockWinPlay[0] = 0;
+            blockWinPlay[1] = 2;
+        }
+
+        if ((board[1][1] == board[2][0]) && board[1][1] == player && board[1][1] != ' '
+                && !(coordinateIsNotAvailable(0, 2, false))) {
+            winningPlay[0] = 0;
+            winningPlay[1] = 2;
+        }
+        if ((board[1][1] == board[2][0]) && board[1][1] != player && board[1][1] != ' '
+                && !(coordinateIsNotAvailable(0, 2, false))) {
+            blockWinPlay[0] = 0;
+            blockWinPlay[1] = 2;
+        }
+    }
+
+    private boolean coordinateIsNotAvailable(int tempCoordX, int tempCoordY, boolean userInput) {
+        if ((tempCoordX > 2 || tempCoordX < 0) || (tempCoordY > 2 || tempCoordY < 0)) {
+            if (userInput) {
+                System.out.println("Coordinates should be from 1 to 3!");
+            }
+            return true;
+        }
+
+        if (board[tempCoordX][tempCoordY] != ' ') {
+            if (userInput) {
+                System.out.println("This cell is occupied! Choose another one!");
+            }
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isGameOption(String input) {
@@ -165,126 +588,5 @@ public class TicTacToe {
         }
 
         return false;
-    }
-
-    // RETURN INT 1 -> X
-    // RETURN INT 2 -> O
-    // RETURN INT 0 -> NOT FINISHED
-    // RETURN INT -1 -> DRAW
-
-    // MATRIX INDEX 0 -> O (player2)
-    // MATRIX INDEX 1 -> X (player1)
-
-    private int checkWin() {
-        int[] rRows = getRows();
-        int[] rLines = getLines();
-        int[] rCross = getCross();
-
-        if (rRows[0] == 0 && rLines[0] == 0 && rRows[1] == 0 && rLines[1] == 0) {
-            if (rCross[1] == 0 && rCross[0] == 0 && (isFinished())) {
-                System.out.println("Draw");
-                return -1;
-            } else if (rCross[1] != 0 && rCross[0] == 0) {
-                System.out.println("X wins");
-                return 1;
-            } else if (rCross[1] == 0 && rCross[0] != 0) {
-                System.out.println("O wins");
-                return 2;
-            }
-        } else {
-            if ((rRows[1] == 1 || rLines[1] == 1) && (rRows[0] == 0 && rLines[0] == 0)) {
-                System.out.println("X wins");
-                return 1;
-            } else if ((rRows[0] == 1 || rLines[0] == 1) && (rRows[1] == 0 && rLines[1] == 0)) {
-                System.out.println("O wins");
-                return 2;
-            }
-        }
-        return 0;
-    }
-
-    private boolean isFinished() {
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (this.pattern[x][y] == ' ') {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private int[] getRows() {
-        int Orows = 0, Xrows = 0;
-        int[] rRows = new int[2];
-
-        rRows[0] = 0;
-        rRows[1] = 0;
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (this.pattern[x][y] == 'O') {
-                    Orows++;
-                } else if (this.pattern[x][y] == 'X') {
-                    Xrows++;
-                }
-            }
-
-            if (Orows == 3) {
-                rRows[0]++;
-            }
-            if (Xrows == 3) {
-                rRows[1]++;
-            }
-            Orows = 0;
-            Xrows = 0;
-        }
-
-        return rRows;
-    }
-
-    private int[] getLines() {
-        int Olines = 0, Xlines = 0;
-        int[] rLines = new int[2];
-
-        rLines[0] = 0;
-        rLines[1] = 0;
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (this.pattern[y][x] == 'O') {
-                    Olines++;
-                } else if (this.pattern[y][x] == 'X') {
-                    Xlines++;
-                }
-            }
-
-            if (Olines == 3) {
-                rLines[0]++;
-            }
-            if (Xlines == 3) {
-                rLines[1]++;
-            }
-            Olines = 0;
-            Xlines = 0;
-        }
-
-        return rLines;
-    }
-
-    private int[] getCross() {
-        int[] rCross = new int[2];
-        rCross[0] = 0;
-        rCross[1] = 0;
-
-        if (this.pattern[1][1] == 'X' && ((this.pattern[0][0] == 'X' && this.pattern[2][2] == 'X')
-                || this.pattern[0][2] == 'X' && this.pattern[2][0] == 'X')) {
-            rCross[1]++;
-        } else if (this.pattern[1][1] == 'O' && ((this.pattern[0][0] == 'O' && this.pattern[2][2] == 'O')
-                || this.pattern[0][2] == 'O' && this.pattern[2][0] == 'O')) {
-            rCross[0]++;
-        }
-
-        return rCross;
     }
 }
